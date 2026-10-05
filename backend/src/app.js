@@ -18,6 +18,9 @@ app.use(cors({
 }));
 
 // routes
+app.get("/", (req, res) => {
+  res.send("API is running");
+});
 app.use('/api/account', accountRoutes);
 app.use('/api/gallery', galleryRoutes);
 app.use('/api/notes', noteRoutes);
