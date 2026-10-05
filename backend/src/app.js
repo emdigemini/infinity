@@ -9,11 +9,12 @@ import noteRoutes from './routes/notes.routes.js';
 import musicRoutes from './routes/music.routes.js';
 import spotifyRoutes from './routes/spotify.routes.js';
 
+const allowedOrigins = process.env.ORIGIN_HOST.split(",");
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://127.0.0.1:5173'],
+  origin: allowedOrigins,
   credentials: true
 }));
 
