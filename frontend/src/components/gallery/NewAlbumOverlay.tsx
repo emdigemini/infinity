@@ -75,10 +75,6 @@ const NewAlbumOverlay = ({
     }
   };
 
-  useEffect(() => {
-    console.log(media);
-  }, [media]);
-
   return (
     <>
       {/* Loading */}

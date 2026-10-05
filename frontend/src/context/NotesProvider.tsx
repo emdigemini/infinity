@@ -30,7 +30,6 @@ const NotesProvider = ({ children }: Props) => {
       setIsLoading(true);
       try {
         const res = await baseUrl.get('/notes/read-note');
-        console.log(res.data)
         if (!res.data || !res.data.notesToRead || res.data.notesToRead.length === 0) {
           setNotesToRead([]);
           return;

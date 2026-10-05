@@ -104,8 +104,6 @@ const Music = () => {
         isOpen={showSpotifyAccounts}
         onClose={() => setShowSpotifyAccounts(false)}
         onDendenAccount={() => {
-          console.log("Continue with Denden account");
-
           setShowSpotifyAccounts(false);
         }}
         onLoginAccount={handleSpotifyAuth}

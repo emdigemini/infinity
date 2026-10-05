@@ -34,7 +34,6 @@ const DeleteNoteOverlay = ({
       }
     } finally {
       setIsLoading(false);
-      console.log(`Deleting note with ID: ${note._id}`);
     }
   }
 
