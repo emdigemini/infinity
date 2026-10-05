@@ -3,6 +3,7 @@ import type { AccountType } from "..";
 
 interface AuthContextType {
   isAppLoaded: boolean;
+  isServerLoaded: boolean;
   setIsAppLoaded: React.Dispatch<React.SetStateAction<boolean>>;
   user: AccountType | null;
   isAuthenticated: boolean;

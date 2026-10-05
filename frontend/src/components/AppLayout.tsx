@@ -9,12 +9,23 @@ import { useNotesContext } from "../context/NotesContext";
 import NoteViwer from "./notes/NoteViwer";
 
 const AppLayout = () => {
-  const { user, isAuthenticated, isAppLoaded, setIsAppLoaded } = useAuthContext();
+  const {
+    user,
+    isAuthenticated,
+    isAppLoaded,
+    isServerLoaded,
+    setIsAppLoaded,
+  } = useAuthContext();
+
   const { notesToRead } = useNotesContext();
+
   const [touch, setTouch] = useState(false);
+
   const pathname = useLocation().pathname;
   const navigate = useNavigate();
+
   const isHome = pathname.split("/").filter(Boolean).length === 1;
+
   const [noteIndex, setNoteIndex] = useState<number | null>(0);
 
   const currentNote = notesToRead[noteIndex!];
@@ -27,16 +38,22 @@ const AppLayout = () => {
     }
   };
 
+  // Enable "Touch anywhere" only after server is ready
   useEffect(() => {
-    setTimeout(() => setTouch(true),1500)
-  }, []);
+    if (isServerLoaded) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setTouch(true);
+    } else {
+      setTouch(false);
+    }
+  }, [isServerLoaded]);
 
   return (
     <div className="min-h-screen bg-white">
       {isAppLoaded && <Fab />}
-      {!isAuthenticated && !user && (
-        <LoginOverlay />
-      )}
+
+      {!isAuthenticated && !user && <LoginOverlay />}
+
       <AnimatePresence mode="wait">
         {isAppLoaded && notesToRead.length > 0 && currentNote && (
           <NoteViwer
@@ -46,23 +63,34 @@ const AppLayout = () => {
           />
         )}
       </AnimatePresence>
+
       {/* Splash / Navbar */}
       <motion.div
         onClick={() => {
-          if (!touch) return;
+          if (!isServerLoaded || !touch) return;
+
           setIsAppLoaded(true);
         }}
         animate={{
           height: isAppLoaded ? "72px" : "100vh",
-          borderRadius: isAppLoaded ? "0px 0px 32px 32px" : "0px",
+          borderRadius: isAppLoaded
+            ? "0px 0px 32px 32px"
+            : "0px",
         }}
         transition={{
           duration: 0.8,
           ease: [0.76, 0, 0.24, 1],
         }}
         className={`
-          shadow-[0_4px_12px_rgba(0,0,0,0.25)] fixed top-0 left-0 z-50 w-full overflow-hidden transition-all ease-in-out text-white
-          ${!isAppLoaded ? "cursor-pointer bg-[#D4A72C]" : "bg-[#D4A72C]"}
+          shadow-[0_4px_12px_rgba(0,0,0,0.25)]
+          fixed top-0 left-0 z-50 w-full
+          overflow-hidden
+          transition-all ease-in-out
+          text-white
+          ${!isAppLoaded
+            ? "cursor-pointer bg-[#D4A72C]"
+            : "bg-[#D4A72C]"
+          }
         `}
       >
         <AnimatePresence mode="wait">
@@ -75,45 +103,53 @@ const AppLayout = () => {
             >
               {/* Infinity */}
               <motion.div
-                initial={{
-                  rotate: 90,
-                  scale: 164 / 128,
-                }}
-                animate={{
-                  rotate: 360,
-                  scale: 1,
-                }}
-                transition={{
-                  duration: 1.4,
-                  ease: "easeInOut",
-                }}
+                animate={{ rotate: 360 }}
+                transition={
+                  isServerLoaded
+                    ? {
+                        duration: 0.5,
+                        ease: "easeOut",
+                      }
+                    : {
+                        duration: 2,
+                        ease: "linear",
+                        repeat: Infinity,
+                      }
+                }
               >
                 <InfinityIcon
                   size={128}
                   strokeWidth={2.5}
                   color="#FFFFFF"
-                  className="animate-pulse"
                 />
               </motion.div>
 
-              {/* Touch anywhere */}
-              <motion.p
-                initial={{
-                  opacity: 0,
-                  y: 10,
-                }}
-                animate={{
-                  opacity: 1,
-                  y: 0,
-                }}
-                transition={{
-                  delay: 1.4,
-                  duration: 0.6,
-                }}
-                className="mt-6 text-sm text-white text-md animate-pulse"
-                >
-                Touch anywhere.
-              </motion.p>
+              {/* Status */}
+              <AnimatePresence mode="wait">
+                {!isServerLoaded ? (
+                  <motion.p
+                    key="loading"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.3 }}
+                    className="mt-6 text-sm text-white animate-pulse"
+                  >
+                    Loading, please wait...
+                  </motion.p>
+                ) : (
+                  <motion.p
+                    key="touch"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.3 }}
+                    className="mt-6 text-sm text-white animate-pulse"
+                  >
+                    Touch anywhere.
+                  </motion.p>
+                )}
+              </AnimatePresence>
             </motion.div>
           ) : (
             user && (
@@ -135,21 +171,24 @@ const AppLayout = () => {
               >
                 <div className="h-6 w-6">
                   {pathname !== "/" &&
-                      (isHome ? (
-                        <Link to="/">
-                          <House size={18} />
-                        </Link>
-                      ) : (
-                        <button onClick={() => navigate(-1)}>
-                          <ArrowLeftToLine size={18} />
-                        </button>
-                      ))
-                    }
+                    (isHome ? (
+                      <Link to="/">
+                        <House size={18} />
+                      </Link>
+                    ) : (
+                      <button onClick={() => navigate(-1)}>
+                        <ArrowLeftToLine size={18} />
+                      </button>
+                    ))}
                 </div>
+
                 <div className="flex flex-col justify-center items-center">
                   <span className="font-semibold">
-                    {user.name} <span className="text-white">♥</span> {user.relationship?.name ?? '?'}
+                    {user.name}{" "}
+                    <span className="text-white">♥</span>{" "}
+                    {user.relationship?.name ?? "?"}
                   </span>
+
                   <span className="text-xs text-white">
                     09.08.26 ♡
                   </span>
@@ -165,7 +204,7 @@ const AppLayout = () => {
       </motion.div>
 
       <main className="pt-23 px-6">
-        <Outlet />
+        {isAppLoaded && <Outlet />}
       </main>
     </div>
   );

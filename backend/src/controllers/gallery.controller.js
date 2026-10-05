@@ -16,7 +16,10 @@ export const createAlbum = async (req, res) => {
       return res.status(400).json({ message: 'Upload at least one or more media to create album.' })
     }
 
-    const mediaUrls = await uploadToCloudinary(name, media);
+    const user = await Account.findById(userId);
+    const userName = user.name;
+
+    const mediaUrls = await uploadToCloudinary(userName, name, media);
 
     const album = await Album.create({ createdBy: userId, name, description });
     const albumId = album._id;

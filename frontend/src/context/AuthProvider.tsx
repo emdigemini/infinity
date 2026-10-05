@@ -10,6 +10,7 @@ const AuthProvider = ({ children }: Props) => {
   const [ user, setUser ] = useState<AccountType | null>(null);
   const [ isAuthenticated, setIsAuthenticated ] = useState(false);
   const [ isLoading, setIsLoading ] = useState(false);
+  const [ isServerLoaded, setIsServerLoaded ] = useState(false);
 
   const loginAccount = async ({ username, password }: { username: string, password: string }) => {
     setIsLoading(true);
@@ -25,6 +26,20 @@ const AuthProvider = ({ children }: Props) => {
       setIsLoading(false);
     }
   }
+  
+  useEffect(() => {
+    const runServer = async () => {
+      try {
+        await baseUrl.get('/');
+        setIsServerLoaded(true);
+      } catch (err: unknown) {
+        console.log(err);
+        setIsServerLoaded(false);
+      }
+    };
+    
+    runServer();
+  }, []);
 
   useEffect(() => {
     if (user) return;
@@ -49,7 +64,7 @@ const AuthProvider = ({ children }: Props) => {
   return (
     <AuthContext.Provider value={{
       isAppLoaded, setIsAppLoaded, user, isAuthenticated, isLoading,
-      loginAccount
+      loginAccount, isServerLoaded
     }}>
       {children}
     </AuthContext.Provider>
