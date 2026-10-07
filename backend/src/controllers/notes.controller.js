@@ -58,7 +58,7 @@ export const fetchNoteToRead = async (req, res) => {
     const user = await Account.findById(userId)
       .populate("relationship");
     const partnerId = user.relationship?._id ?? null;
-
+console.log(partnerId);
     if (!partnerId)
       return res.status(401).end();
     const notes = await Note.find({ createdBy: partnerId });
