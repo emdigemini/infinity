@@ -78,25 +78,14 @@ export const fetchNoteToRead = async (req, res) => {
     });
 
     const now = new Date();
+now.setHours(0, 0, 0, 0);
 
-    const notesToRead = notes.filter((note) => {
+const notesToRead = notes.filter((note) => {
   const noteDate = new Date(note.date);
+  noteDate.setHours(0, 0, 0, 0);
 
-  const [hours, minutes] = note.time.split(":").map(Number);
-
-  const noteDateTime = new Date(
-    noteDate.getFullYear(),
-    noteDate.getMonth(),
-    noteDate.getDate(),
-    hours,
-    minutes,
-    0,
-    0
-  );
-
-  return now >= noteDateTime;
+  return now >= noteDate;
 });
-
     console.log("Current time:", now);
     console.log("Partner ID:", partnerId);
     console.log("Notes found:", notes.length);
