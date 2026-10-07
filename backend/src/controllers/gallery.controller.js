@@ -137,8 +137,11 @@ export const addMedia = async (req, res) => {
         message: "Album not found.",
       });
     }
+    
+    const user = await Account.findById(userId);
+    const userName = user.name;
 
-    const uploadedMedia = await uploadToCloudinary(album.name, media);
+    const uploadedMedia = await uploadToCloudinary(userName, album.name, media);
 
     const newMedia = await Media.insertMany(
       uploadedMedia.map((item) => ({
