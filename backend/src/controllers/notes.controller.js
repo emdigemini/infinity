@@ -78,14 +78,25 @@ export const fetchNoteToRead = async (req, res) => {
     });
 
     const now = new Date();
-now.setHours(0, 0, 0, 0);
+
+const todayPH = new Intl.DateTimeFormat("en-CA", {
+  timeZone: "Asia/Manila",
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+}).format(now);
 
 const notesToRead = notes.filter((note) => {
-  const noteDate = new Date(note.date);
-  noteDate.setHours(0, 0, 0, 0);
+  const noteDatePH = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Manila",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date(note.date));
 
-  return now >= noteDate;
+  return noteDatePH <= todayPH;
 });
+    
     console.log("Current time:", now);
     console.log("Partner ID:", partnerId);
     console.log("Notes found:", notes.length);
