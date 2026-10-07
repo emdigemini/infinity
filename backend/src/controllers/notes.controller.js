@@ -55,31 +55,59 @@ export const updateNote = async (req, res) => {
 export const fetchNoteToRead = async (req, res) => {
   try {
     const userId = req.user.id;
+
     const user = await Account.findById(userId)
       .populate("relationship");
-    const partnerId = user.relationship?._id ?? null;
-console.log(partnerId);
-    if (!partnerId)
-      return res.status(401).end();
-    const notes = await Note.find({ createdBy: partnerId });
-console.log("notes: ", notes);
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    const partnerId = user.relationship?._id;
+
+    if (!partnerId) {
+      return res.status(200).json({
+        notesToRead: [],
+      });
+    }
+
+    const notes = await Note.find({
+      createdBy: partnerId,
+    });
+
     const now = new Date();
+
     const notesToRead = notes.filter((note) => {
-  const date = new Date(note.date);
+      const date = new Date(note.date);
 
-  const [hours, minutes] = note.time.split(":").map(Number);
+      const [hours, minutes] = note.time
+        .split(":")
+        .map(Number);
 
-  date.setHours(hours, minutes, 0, 0);
+      date.setHours(hours, minutes, 0, 0);
 
-  return now >= date;
-});
-    console.log("notesToRead: ", notesToRead);
-    res.status(200).json({ notesToRead });
+      return now >= date;
+    });
+
+    console.log("Current time:", now);
+    console.log("Partner ID:", partnerId);
+    console.log("Notes found:", notes.length);
+    console.log("Notes to read:", notesToRead.length);
+
+    return res.status(200).json({
+      notesToRead,
+    });
+
   } catch (err) {
-    console.error('Error in fetchNoteToRead controller:', err);
-    res.status(500).json({ message: "Internal server error" });
+    console.error("Error in fetchNoteToRead controller:", err);
+
+    return res.status(500).json({
+      message: "Internal server error",
+    });
   }
-}
+};
 
 export const deleteNote = async (req, res) => {
   try {
