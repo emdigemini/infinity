@@ -65,11 +65,14 @@ console.log(partnerId);
 console.log("notes: ", notes);
     const now = new Date();
     const notesToRead = notes.filter((note) => {
-      const date = new Date(note.date);
-      const [hours, minutes] = note.time.split(":").map(Number);
-      date.setHours(hours, minutes, 0, 0);
-      return now >= date;
-    });
+  const date = new Date(note.date);
+
+  const [hours, minutes] = note.time.split(":").map(Number);
+
+  date.setHours(hours, minutes, 0, 0);
+
+  return now >= date;
+});
     console.log("notesToRead: ", notesToRead);
     res.status(200).json({ notesToRead });
   } catch (err) {
