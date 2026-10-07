@@ -80,16 +80,22 @@ export const fetchNoteToRead = async (req, res) => {
     const now = new Date();
 
     const notesToRead = notes.filter((note) => {
-      const date = new Date(note.date);
+  const noteDate = new Date(note.date);
 
-      const [hours, minutes] = note.time
-        .split(":")
-        .map(Number);
+  const [hours, minutes] = note.time.split(":").map(Number);
 
-      date.setHours(hours, minutes, 0, 0);
+  const noteDateTime = new Date(
+    noteDate.getFullYear(),
+    noteDate.getMonth(),
+    noteDate.getDate(),
+    hours,
+    minutes,
+    0,
+    0
+  );
 
-      return now >= date;
-    });
+  return now >= noteDateTime;
+});
 
     console.log("Current time:", now);
     console.log("Partner ID:", partnerId);
