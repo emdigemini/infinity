@@ -62,7 +62,7 @@ console.log(partnerId);
     if (!partnerId)
       return res.status(401).end();
     const notes = await Note.find({ createdBy: partnerId });
-
+console.log("notes: ", notes);
     const now = new Date();
     const notesToRead = notes.filter((note) => {
       const date = new Date(note.date);
@@ -70,7 +70,7 @@ console.log(partnerId);
       date.setHours(hours, minutes, 0, 0);
       return now >= date;
     });
-    
+    console.log("notesToRead: ", notesToRead);
     res.status(200).json({ notesToRead });
   } catch (err) {
     console.error('Error in fetchNoteToRead controller:', err);
