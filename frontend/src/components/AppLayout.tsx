@@ -1,11 +1,16 @@
 import Fab from "./Fab";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { InfinityIcon, House, ArrowLeftToLine, BookHeart } from "lucide-react";
+import {
+  InfinityIcon,
+  House,
+  ArrowLeftToLine,
+  BookHeart,
+} from "lucide-react";
 import { Outlet, Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
-import LoginOverlay from "./auth/LoginOverlay";
 import { useNotesContext } from "../context/NotesContext";
+import LoginOverlay from "./auth/LoginOverlay";
 import NoteViewer from "./notes/NoteViewer";
 
 const AppLayout = () => {
@@ -20,30 +25,39 @@ const AppLayout = () => {
   const { notesToRead, updateReadNote } = useNotesContext();
 
   const [touch, setTouch] = useState(false);
+  const [isManualOpen, setIsManualOpen] = useState(false);
+  const [noteIndex, setNoteIndex] = useState(0);
 
   const pathname = useLocation().pathname;
   const navigate = useNavigate();
 
   const isHome = pathname.split("/").filter(Boolean).length === 1;
 
-  const [noteIndex, setNoteIndex] = useState<number | null>(0);
-
-  const currentNote = notesToRead[noteIndex!];
+  const unreadNotes = notesToRead.filter((note) => !note.isRead);
+  const displayedNotes = isManualOpen ? notesToRead : unreadNotes;
+  const currentNote = displayedNotes[noteIndex];
 
   const handleCloseNote = (noteId: string) => {
-    if (!user) return;
-    if (noteIndex! < notesToRead.length - 1) {
-      setNoteIndex((prev) => prev! + 1);
-    } else {
-      setNoteIndex(null);
+    if (!user || !currentNote) return;
+
+    if (!isManualOpen) {
+      updateReadNote({ noteId, id: user.id });
     }
-    updateReadNote({ noteId, id: user.id });
+
+    if (noteIndex < displayedNotes.length - 1) {
+      setNoteIndex((prev) => prev + 1);
+    } else {
+      setIsManualOpen(false);
+      setNoteIndex(0);
+    }
   };
 
   useEffect(() => {
     if (isServerLoaded) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setTouch(true);
+      setIsManualOpen(false);
+      setNoteIndex(0);
     } else {
       setTouch(false);
     }
@@ -56,46 +70,32 @@ const AppLayout = () => {
       {!isAuthenticated && !user && <LoginOverlay />}
 
       <AnimatePresence mode="wait">
-        {isAppLoaded &&
-          notesToRead.filter((note) => !note.isRead).length > 0 &&
-          currentNote &&
-          !currentNote.isRead && (
-            <NoteViewer
-              key={currentNote._id}
-              note={currentNote}
-              onClose={handleCloseNote}
-            />
-          )}
+        {isAppLoaded && currentNote && (
+          <NoteViewer
+            key={currentNote._id}
+            note={currentNote}
+            onClose={handleCloseNote}
+          />
+        )}
       </AnimatePresence>
 
-      {/* Splash / Navbar */}
       <motion.div
         onClick={() => {
           if (!isServerLoaded || !touch) return;
-
           setIsAppLoaded(true);
         }}
         animate={{
           height: isAppLoaded ? "72px" : "100vh",
-          borderRadius: isAppLoaded
-            ? "0px 0px 32px 32px"
-            : "0px",
+          borderRadius: isAppLoaded ? "0px 0px 32px 32px" : "0px",
         }}
         transition={{
           duration: 0.8,
           ease: [0.76, 0, 0.24, 1],
         }}
-        className={`
+        className={`fixed left-0 top-0 z-50 w-full overflow-hidden
+          bg-[#D4A72C] text-white
           shadow-[0_4px_12px_rgba(0,0,0,0.25)]
-          fixed top-0 left-0 z-50 w-full
-          overflow-hidden
-          transition-all ease-in-out
-          text-white
-          ${!isAppLoaded
-            ? "cursor-pointer bg-[#D4A72C]"
-            : "bg-[#D4A72C]"
-          }
-        `}
+          ${!isAppLoaded ? "cursor-pointer" : ""}`}
       >
         <AnimatePresence mode="wait">
           {!isAppLoaded ? (
@@ -103,17 +103,13 @@ const AppLayout = () => {
               key="splash"
               initial={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="h-screen flex flex-col items-center justify-center"
+              className="flex h-screen flex-col items-center justify-center"
             >
-              {/* Infinity */}
               <motion.div
                 animate={{ rotate: 360 }}
                 transition={
                   isServerLoaded
-                    ? {
-                        duration: 0.5,
-                        ease: "easeOut",
-                      }
+                    ? { duration: 0.5, ease: "easeOut" }
                     : {
                         duration: 2,
                         ease: "linear",
@@ -128,7 +124,6 @@ const AppLayout = () => {
                 />
               </motion.div>
 
-              {/* Status */}
               <AnimatePresence mode="wait">
                 {!isServerLoaded ? (
                   <motion.p
@@ -137,7 +132,7 @@ const AppLayout = () => {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.3 }}
-                    className="mt-6 text-sm text-white animate-pulse"
+                    className="mt-6 animate-pulse text-sm text-white"
                   >
                     Loading, please wait...
                   </motion.p>
@@ -148,7 +143,7 @@ const AppLayout = () => {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.3 }}
-                    className="mt-6 text-sm text-white animate-pulse"
+                    className="mt-6 animate-pulse text-sm text-white"
                   >
                     Touch anywhere.
                   </motion.p>
@@ -159,19 +154,10 @@ const AppLayout = () => {
             user && (
               <motion.nav
                 key="navbar"
-                initial={{
-                  opacity: 0,
-                  y: -20,
-                }}
-                animate={{
-                  opacity: 1,
-                  y: 0,
-                }}
-                transition={{
-                  delay: 0.4,
-                  duration: 0.4,
-                }}
-                className="h-18 px-6 flex items-center justify-between"
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4, duration: 0.4 }}
+                className="flex h-18 items-center justify-between px-6"
               >
                 <div className="h-6 w-6">
                   {pathname !== "/" &&
@@ -186,7 +172,7 @@ const AppLayout = () => {
                     ))}
                 </div>
 
-                <div className="flex flex-col justify-center items-center">
+                <div className="flex flex-col items-center justify-center">
                   <span className="font-semibold">
                     {user.name}{" "}
                     <span className="text-white">♥</span>{" "}
@@ -198,10 +184,22 @@ const AppLayout = () => {
                   </span>
                 </div>
 
-                <button className="relative rounded-xl bg-[#FFF7CC] p-2 text-[#8B7A45] transition hover:bg-[#F5E8A8] active:scale-95">
-                  <span className="absolute -right-1 -top-1 rounded-full bg-[#D4A72C] px-1.5 text-[10px] font-bold text-white">
-                    {notesToRead.length}
-                  </span>
+                <button
+                  className="relative rounded-xl bg-[#FFF7CC] p-2
+                    text-[#8B7A45] transition hover:bg-[#F5E8A8]
+                    active:scale-95"
+                  onClick={() => {
+                    setNoteIndex(0);
+                    setIsManualOpen(true);
+                  }}
+                >
+                  {notesToRead.length > 0 && (
+                    <span className="absolute -right-1 -top-1 rounded-full
+                      bg-[#D4A72C] px-1.5 text-[10px] font-bold text-white">
+                      {notesToRead.length}
+                    </span>
+                  )}
+
                   <BookHeart size={18} />
                 </button>
               </motion.nav>
@@ -210,7 +208,7 @@ const AppLayout = () => {
         </AnimatePresence>
       </motion.div>
 
-      <main className="pt-23 px-6">
+      <main className="px-6 pt-23">
         {isAppLoaded && <Outlet />}
       </main>
     </div>
