@@ -7,6 +7,7 @@ type NotesContextType = {
   notes: NotesType[] | [];
   setNotes: React.Dispatch<React.SetStateAction<NotesType[] | []>>;
   notesToRead: NotesType[] | [];
+  updateReadNote: (params: { noteId: string, id: string }) => Promise<void>;
 }
 
 export const NotesContext = createContext<NotesContextType | null>(null);

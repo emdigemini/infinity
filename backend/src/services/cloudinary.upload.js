@@ -1,4 +1,3 @@
-import path from 'path';
 import cloudinary from "../middleware/cloudinary..middleware.js";
 
 export const uploadToCloudinary = (userName, name, media) => {

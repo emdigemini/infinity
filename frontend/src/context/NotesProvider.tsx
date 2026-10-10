@@ -11,6 +11,20 @@ const NotesProvider = ({ children }: Props) => {
   const [ notes, setNotes ] = useState<NotesType[] | []>([]);
   const [notesToRead, setNotesToRead] = useState<NotesType[] | []>([]);
 
+  const updateReadNote = async ({ noteId, id }: { noteId: string, id: string }) => {
+    try {
+      await baseUrl.patch("/notes/read-note", null, {
+        params: {
+          noteId,
+          id,
+        },
+      });
+
+    } catch (err: unknown) {
+      console.log(err);
+    }
+  }
+
   useEffect(() => {
     if (!user) return;
 
@@ -29,7 +43,7 @@ const NotesProvider = ({ children }: Props) => {
     const fetchNoteToRead = async () => {
       setIsLoading(true);
       try {
-        const res = await baseUrl.get('/notes/read-note');
+        const res = await baseUrl.get('/notes/get-note-to-read');
         if (!res.data || !res.data.notesToRead || res.data.notesToRead.length === 0) {
           setNotesToRead([]);
           return;
@@ -47,7 +61,10 @@ const NotesProvider = ({ children }: Props) => {
   }, [user]);
 
   return (
-    <NotesContext.Provider value={{ isLoading, setIsLoading, notes, setNotes, notesToRead }}>
+    <NotesContext.Provider value={{
+      isLoading, setIsLoading, notes,
+      setNotes, notesToRead, updateReadNote
+    }}>
       {children}
     </NotesContext.Provider>
   )

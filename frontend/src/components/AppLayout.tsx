@@ -1,12 +1,12 @@
 import Fab from "./Fab";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { InfinityIcon, EllipsisVertical, House, ArrowLeftToLine } from "lucide-react";
+import { InfinityIcon, House, ArrowLeftToLine, BookHeart } from "lucide-react";
 import { Outlet, Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
 import LoginOverlay from "./auth/LoginOverlay";
 import { useNotesContext } from "../context/NotesContext";
-import NoteViwer from "./notes/NoteViwer";
+import NoteViewer from "./notes/NoteViewer";
 
 const AppLayout = () => {
   const {
@@ -17,7 +17,7 @@ const AppLayout = () => {
     setIsAppLoaded,
   } = useAuthContext();
 
-  const { notesToRead } = useNotesContext();
+  const { notesToRead, updateReadNote } = useNotesContext();
 
   const [touch, setTouch] = useState(false);
 
@@ -30,15 +30,16 @@ const AppLayout = () => {
 
   const currentNote = notesToRead[noteIndex!];
 
-  const handleCloseNote = () => {
+  const handleCloseNote = (noteId: string) => {
+    if (!user) return;
     if (noteIndex! < notesToRead.length - 1) {
       setNoteIndex((prev) => prev! + 1);
     } else {
       setNoteIndex(null);
     }
+    updateReadNote({ noteId, id: user.id });
   };
 
-  // Enable "Touch anywhere" only after server is ready
   useEffect(() => {
     if (isServerLoaded) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -55,13 +56,16 @@ const AppLayout = () => {
       {!isAuthenticated && !user && <LoginOverlay />}
 
       <AnimatePresence mode="wait">
-        {isAppLoaded && notesToRead.length > 0 && currentNote && (
-          <NoteViwer
-            key={currentNote._id}
-            note={currentNote}
-            onClose={handleCloseNote}
-          />
-        )}
+        {isAppLoaded &&
+          notesToRead.filter((note) => !note.isRead).length > 0 &&
+          currentNote &&
+          !currentNote.isRead && (
+            <NoteViewer
+              key={currentNote._id}
+              note={currentNote}
+              onClose={handleCloseNote}
+            />
+          )}
       </AnimatePresence>
 
       {/* Splash / Navbar */}
@@ -194,8 +198,11 @@ const AppLayout = () => {
                   </span>
                 </div>
 
-                <button>
-                  <EllipsisVertical size={18} />
+                <button className="relative rounded-xl bg-[#FFF7CC] p-2 text-[#8B7A45] transition hover:bg-[#F5E8A8] active:scale-95">
+                  <span className="absolute -right-1 -top-1 rounded-full bg-[#D4A72C] px-1.5 text-[10px] font-bold text-white">
+                    {notesToRead.length}
+                  </span>
+                  <BookHeart size={18} />
                 </button>
               </motion.nav>
             )

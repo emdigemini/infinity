@@ -8,12 +8,12 @@ const paperTransition = {
   ease: [0.22, 1, 0.36, 1] as const,
 };
 
-const NoteViwer = ({
+const NoteViewer = ({
   note,
   onClose,
 }: {
   note: NotesType;
-  onClose: () => void;
+  onClose: (noteId: string) => void;
 }) => {
   const text = `${note.title} ${note.content}`;
 
@@ -127,7 +127,7 @@ const NoteViwer = ({
 
             {/* CLOSE BUTTON */}
             <button
-              onClick={onClose}
+              onClick={() => onClose(note._id)}
               className="
                 fixed right-4 top-4 flex h-9 w-9 items-center justify-center
                 rounded-full border border-[#E8D9A5] bg-[#FFFDF6]/80
@@ -146,4 +146,4 @@ const NoteViwer = ({
   );
 };
 
-export default NoteViwer;
+export default NoteViewer;

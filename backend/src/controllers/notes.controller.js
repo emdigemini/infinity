@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Account from "../models/Account.js";
 import Note from "../models/Note.js";
 
@@ -89,6 +90,34 @@ export const deleteNote = async (req, res) => {
     res.status(200).json({ message: "Note deleted successfully" });
   } catch (err) {
     console.error('Error in deleteNote controller:', err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+export const readNote = async (req, res) => {
+  try {
+    const { noteId, id } = req.query;
+    const userId = req.user.id;
+    const user = await Account.findById(userId)
+      .populate("relationship");
+    const user2 = await Account.findById(id);
+    if (!noteId) 
+      return res.status(404).end();
+    if (!user2)
+      return res.status(401).end();
+    const partnerId = user2._id;
+
+    const isRead = partnerId.toString() === user._id.toString();
+
+    await Note.findByIdAndUpdate(
+      noteId,
+      { isRead },
+      { returnDocument: 'after' }
+    );
+
+    res.sendStatus(200);
+  } catch (err) {
+    console.error('Error in readNote controller:', err);
     res.status(500).json({ message: "Internal server error" });
   }
 }

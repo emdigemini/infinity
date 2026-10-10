@@ -35,12 +35,13 @@ export interface MediaType {
 }
 
 export interface NotesType {
-  _id?: string;
+  _id: string;
   title: string;
   content: string;
   date: string;
   time: string;
   createdAt: string;
+  isRead: boolean;
 }
 
 export interface MusicType {
