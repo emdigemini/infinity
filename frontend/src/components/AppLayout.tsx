@@ -19,6 +19,7 @@ const AppLayout = () => {
     user,
     isAuthenticated,
     isAppLoaded,
+    isLoading,
     isServerLoaded,
     setIsAppLoaded,
   } = useAuthContext();
@@ -74,7 +75,7 @@ const AppLayout = () => {
     <div className="min-h-screen bg-white">
       {isAppLoaded && <Fab />}
 
-      {isServerLoaded && !isAuthenticated && !user && <LoginOverlay />}
+      {isServerLoaded && !isLoading && !isAuthenticated && !user && <LoginOverlay />}
 
       <AnimatePresence mode="wait">
         {isAppLoaded && currentNote && (

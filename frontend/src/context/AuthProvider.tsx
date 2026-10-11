@@ -28,12 +28,13 @@ const AuthProvider = ({ children }: Props) => {
   }
   
   useEffect(() => {
+    
     const runServer = async () => {
       try {
         await baseUrl.get('/');
         setIsServerLoaded(true);
       } catch (err: unknown) {
-        console.log(err);
+        console.error("Server connection failed:", err);
         setIsServerLoaded(false);
       }
     };
@@ -46,6 +47,7 @@ const AuthProvider = ({ children }: Props) => {
     if (user) return;
 
     const checkAuth = async () => {
+      setIsLoading(true);
       try {
         const res = await baseUrl.get("/account/check-auth");
         if (!res.data) {
@@ -56,6 +58,8 @@ const AuthProvider = ({ children }: Props) => {
         setIsAuthenticated(true);
       } catch (err: unknown) {
         console.log(err)
+      } finally {
+        setIsLoading(false);
       }
     }
 
