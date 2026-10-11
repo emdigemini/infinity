@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import Account from "../models/Account.js";
 import Note from "../models/Note.js";
 

@@ -42,6 +42,7 @@ const AuthProvider = ({ children }: Props) => {
   }, []);
 
   useEffect(() => {
+    if (!isServerLoaded) return;
     if (user) return;
 
     const checkAuth = async () => {
@@ -59,7 +60,7 @@ const AuthProvider = ({ children }: Props) => {
     }
 
     checkAuth();
-  }, [user]);
+  }, [user, isServerLoaded]);
 
   return (
     <AuthContext.Provider value={{

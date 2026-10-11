@@ -74,37 +74,24 @@ const NoteViewer = ({
             }}
           >
             {/* RED NOTEBOOK MARGIN */}
-            <div
-              className="
-                pointer-events-none
-                absolute
-                bottom-0
-                left-10
-                top-0
-                w-px
-                bg-[#E8B8B8]
-              "
-            />
+            <div className="pointer-events-none absolute bottom-0 left-6 top-0 w-px bg-[#E8B8B8]"/>
 
             {/* PAPER CONTENT */}
-            <div className="relative flex flex-col px-14 pt-8">
+            <div className="relative flex flex-col px-10 pt-8">
 
               {/* DATE */}
               <p className="text-sm leading-8 text-[#8B7A45]">
                 {/* {formatDate(new Date(note.date))} · {formatTime(note.time)} */}
               </p>
-              <p className="absolute top-1 text-sm leading-8 text-[#8B7A45]">
+              <p className="absolute top-1 text-xs md:text-sm leading-8 text-[#8B7A45]">
                 {wordCount} words · {characterCount} characters
               </p>
 
               {/* TITLE */}
               <h2
                 className="
-                  mt-1
-                  text-3xl
-                  font-semibold
-                  leading-8
-                  text-[#2B2618]
+                  mt-1 text-2xl md:text-3xl font-semibold 
+                  leading-8 text-[#2B2618]
                 "
               >
                 {note.title}
@@ -113,11 +100,9 @@ const NoteViewer = ({
               {/* NOTE CONTENT */}
               <p
                 className="
-                  mt-4
-                  whitespace-pre-wrap
-                  text-[16px]
-                  leading-8
-                  text-[#2B2618]
+                  mt-4 whitespace-pre-wrap
+                  text-[14px] md:text-[16px]
+                  leading-8 text-[#2B2618]
                 "
               >
                 {note.content}
@@ -129,14 +114,14 @@ const NoteViewer = ({
             <button
               onClick={() => onClose(note._id)}
               className="
-                fixed right-4 top-4 flex h-9 w-9 items-center justify-center
+                fixed right-4 top-4 flex h-6 w-6 md:h-9 md:w-9 items-center justify-center
                 rounded-full border border-[#E8D9A5] bg-[#FFFDF6]/80
                 text-[#8B7A45] shadow-sm backdrop-blur-sm transition-all
                 duration-200 hover:bg-[#F5EAC8] hover:text-[#2B2618]
                 hover:shadow-md active:scale-95
               "
             >
-              <X size={18} strokeWidth={1.8} />
+              <X size={16} strokeWidth={1.8} />
             </button>
           </div>
         </motion.div>

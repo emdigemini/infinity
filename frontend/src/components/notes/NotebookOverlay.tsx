@@ -56,7 +56,7 @@ const NotebookOverlay = ({
                 Notes Received
               </h2>
               <p className="mt-0.5 text-xs text-white/85">
-                Little words from your partner ♡
+                A note message from your partner ♡
               </p>
             </div>
           </div>
