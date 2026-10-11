@@ -74,7 +74,7 @@ const AppLayout = () => {
     <div className="min-h-screen bg-white">
       {isAppLoaded && <Fab />}
 
-      {!isAuthenticated && !user && <LoginOverlay />}
+      {isServerLoaded && !isAuthenticated && !user && <LoginOverlay />}
 
       <AnimatePresence mode="wait">
         {isAppLoaded && currentNote && (

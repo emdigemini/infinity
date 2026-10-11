@@ -4,11 +4,9 @@ import { useAuthContext } from "../../context/AuthContext";
 import toast from "react-hot-toast";
 
 function LoginOverlay() {
-  const { loginAccount, isServerLoaded } = useAuthContext();
+  const { loginAccount } = useAuthContext();
   const [ username, setUsername ] = useState('');
   const [ password, setPassword ] = useState('');
-
-  if (!isServerLoaded) return;
 
   return (
     <div className="fixed inset-0 z-999 flex items-center justify-center bg-black/20 px-5 backdrop-blur-[2px]">
