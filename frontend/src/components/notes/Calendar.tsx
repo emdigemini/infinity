@@ -6,15 +6,15 @@ import {
 } from 'lucide-react'
 import { useNotesContext } from '../../context/NotesContext'
 import NoteList from './NoteList'
-import { formatDate, formatTime } from '../../utils'
+import { formatNumDate, formatTime } from '../../utils'
 import type { NotesType } from '../..'
 
 const Calendar = ({ setShowDeleteOverlay, setSelectedNote, selectedNote }: { setShowDeleteOverlay: (note: NotesType) => void; setSelectedNote: (note: NotesType) => void; selectedNote: NotesType | null }) => {
   const { notes } = useNotesContext();
-  const [currentDate, setCurrentDate] = useState(new Date())
-  const [selectedDate, setSelectedDate] = useState(new Date())
-  const year = currentDate.getFullYear()
-  const month = currentDate.getMonth()
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth();
 
   const daysInMonth = new Date(
     year,
@@ -35,7 +35,7 @@ const Calendar = ({ setShowDeleteOverlay, setSelectedNote, selectedNote }: { set
     }
   )
 
-  const selectedDateString = formatDate(selectedDate)
+  const selectedDateString = formatNumDate(selectedDate)
 
   const selectedNotes = notes.filter(
     note => note.date.split('T')[0] === selectedDateString
@@ -72,7 +72,7 @@ const Calendar = ({ setShowDeleteOverlay, setSelectedNote, selectedNote }: { set
     const date = new Date(year, month, day)
 
     return notes.some(
-      note => note.date.split('T')[0] === formatDate(date)
+      note => note.date.split('T')[0] === formatNumDate(date)
     )
   }
 

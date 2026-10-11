@@ -1,10 +1,5 @@
-import {
-  X,
-  Heart,
-  Send,
-  CalendarDays,
-  Clock
-} from 'lucide-react'
+import { X, Heart, Send, CalendarDays} from 'lucide-react'
+import { formatNameDate } from '../../utils';
 import { useState } from 'react'
 import { toast } from 'react-hot-toast'
 import { isAxiosError } from "axios";
@@ -16,14 +11,21 @@ const CreateNoteOverlay = ({
 }: {
   onClose: () => void
 }) => {
-
   const { setIsLoading, setNotes } = useNotesContext();
   const [note, setNote] = useState({
     title: '',
     content: '',
     date: '',
     time: ''
-  })
+  });
+  const [today] = useState(() => {
+    const date = new Date();
+    const offset = date.getTimezoneOffset();
+
+    return new Date(date.getTime() - offset * 60000)
+      .toISOString()
+      .split("T")[0];
+  });
 
   const handleCreateNote = async () => {
     
@@ -165,7 +167,7 @@ const CreateNoteOverlay = ({
                   text-xs
                   text-[#A89563]
                 ">
-                  Written on {createdDate}
+                  Written on {formatNameDate(note.date) || createdDate}
                 </p>
               </div>
 
@@ -252,146 +254,161 @@ const CreateNoteOverlay = ({
           {/* Delivery section */}
           <div className="
             relative
-            mt-8
-            rounded-xl
-            border
-            border-[#D4A72C]/40
-            bg-[#FFF8DC]/80
-            px-5
-            py-4
+            overflow-hidden
+            rounded-2xl
+            border border-[#D4A72C]/25
+            bg-linear-to-br
+            from-[#FFFDF5]
+            to-[#FFF8DF]
+            p-5
+            shadow-sm
           ">
 
+            {/* Decorative heart */}
+            <Heart
+              size={90}
+              className="
+                pointer-events-none
+                absolute
+                -right-5
+                -top-5
+                rotate-12
+                text-[#D4A72C]/10
+              "
+              fill="currentColor"
+            />
+
+            {/* Header */}
             <div className="
-              mb-3
+              relative
+              mb-5
               flex
-              items-center
-              gap-2
+              items-start
+              gap-3
             ">
-
-              <Heart
-                size={15}
-                fill="currentColor"
-                className="text-[#D4A72C]"
-              />
-
-              <p className="
-                font-serif
-                text-base
-                font-semibold
-                text-[#2B2618]
+              <div className="
+                flex
+                h-10
+                w-10
+                shrink-0
+                items-center
+                justify-center
+                rounded-xl
+                bg-[#D4A72C]/15
+                text-[#B18A1E]
               ">
-                A note for later
-              </p>
+                <Heart
+                  size={19}
+                  fill="currentColor"
+                />
+              </div>
 
+              <div>
+                <h3 className="
+                  font-serif
+                  text-lg
+                  font-semibold
+                  tracking-tight
+                  text-[#2B2618]
+                ">
+                  A note for later
+                </h3>
+
+                <p className="
+                  mt-1
+                  text-xs
+                  leading-relaxed
+                  text-[#8B7A45]
+                ">
+                  A little message, waiting for the perfect day.
+                </p>
+              </div>
             </div>
 
-            <p className="
-              mb-4
-              text-xs
-              text-[#8B7A45]
-            ">
-              Set a date & time for this message to appear.
-            </p>
-
-            <div className="
-              grid
-              grid-cols-1
-              gap-3
-              sm:grid-cols-2
-            ">
-
-              {/* Date */}
-              <div>
-
-                <label className="
-                  mb-1.5
+            {/* Date picker */}
+            <div className="relative">
+              <label
+                htmlFor="note-date"
+                className="
+                  mb-2
                   flex
                   items-center
-                  gap-1.5
+                  gap-2
                   text-xs
-                  font-medium
+                  font-semibold
+                  uppercase
+                  tracking-wider
                   text-[#8B7A45]
-                ">
-                  <CalendarDays size={13} />
-                  Deliver on
-                </label>
+                "
+              >
+                <CalendarDays size={14} />
+                Delivery date
+              </label>
+
+              <div className="
+                flex
+                items-center
+                gap-3
+                rounded-xl
+                border
+                border-[#D4A72C]/35
+                bg-white/80
+                px-3
+                transition-colors
+                focus-within:border-[#D4A72C]
+                focus-within:ring-2
+                focus-within:ring-[#D4A72C]/15
+              ">
+                <CalendarDays
+                  size={19}
+                  className="shrink-0 text-[#D4A72C]"
+                />
 
                 <input
+                  id="note-date"
                   type="date"
-                  min={
-                    new Date()
-                      .toISOString()
-                      .split('T')[0]
-                  }
+                  min={today}
                   value={note.date}
                   onChange={(e) =>
-                    setNote(prev => ({
+                    setNote((prev) => ({
                       ...prev,
-                      date: e.target.value
+                      date: e.target.value,
                     }))
                   }
                   className="
+                    min-w-0
                     w-full
-                    rounded-lg
-                    border
-                    border-[#D4A72C]/40
-                    bg-[#FFFDF5]
-                    px-3
-                    py-2
+                    cursor-pointer
+                    bg-transparent
+                    py-3
                     text-sm
+                    font-medium
                     text-[#2B2618]
                     outline-none
-                    focus:border-[#D4A72C]
                   "
                 />
-
               </div>
 
-              {/* Time */}
-              <div>
-
-                <label className="
-                  mb-1.5
-                  flex
-                  items-center
-                  gap-1.5
-                  text-xs
-                  font-medium
-                  text-[#8B7A45]
-                ">
-                  <Clock size={13} />
-                  At
-                </label>
-
-                <input
-                  type="time"
-                  value={note.time}
-                  onChange={(e) =>
-                    setNote(prev => ({
-                      ...prev,
-                      time: e.target.value
-                    }))
-                  }
-                  className="
-                    w-full
-                    rounded-lg
-                    border
-                    border-[#D4A72C]/40
-                    bg-[#FFFDF5]
-                    px-3
-                    py-2
-                    text-sm
-                    text-[#2B2618]
-                    outline-none
-                    focus:border-[#D4A72C]
-                  "
+              <p className="
+                mt-2
+                flex
+                items-center
+                gap-1.5
+                text-[11px]
+                leading-relaxed
+                text-[#8B7A45]
+              ">
+                <Heart
+                  size={11}
+                  fill="currentColor"
+                  className="shrink-0 text-[#D4A72C]"
                 />
-
-              </div>
-
+                This note will be waiting for your special someone.
+              </p>
             </div>
 
           </div>
+
 
           {/* Footer */}
           <div className="

@@ -5,17 +5,16 @@ import { useState } from 'react'
 import CreateNoteOverlay from '../components/notes/CreateNoteOverlay';
 import DeleteNoteOverlay from '../components/notes/DeleteNoteOverlay';
 import NoteEditor from '../components/notes/NoteEditor';
-import { formatDate, formatTime } from '../utils';
+import { formatNumDate, formatTime } from '../utils';
 import { isAxiosError } from 'axios';
 import { toast } from 'react-hot-toast';
 import baseUrl from '../axios';
 import { useNotesContext } from '../context/NotesContext';
 
 const Notes = () => {
-  const { setIsLoading, setNotes, notes } = useNotesContext();
+  const { setIsLoading, setNotes, notes, selectedNote, setSelectedNote } = useNotesContext();
   const [showNoteModal, setShowNoteModal] = useState(false);
   const [showDeleteOverlay, setShowDeleteOverlay] = useState<NotesType | false>(false);
-  const [selectedNote, setSelectedNote] = useState<NotesType | null>(null);
 
   const handleUpdateNote = async (updatedNote: NotesType) => {
     setIsLoading(true);
@@ -39,7 +38,7 @@ const Notes = () => {
       {showDeleteOverlay && (
         <DeleteNoteOverlay 
           note={showDeleteOverlay}
-          formatDate={formatDate}
+          formatDate={formatNumDate}
           formatTime={formatTime}
           onCancel={() => setShowDeleteOverlay(false)}
         />
@@ -48,7 +47,7 @@ const Notes = () => {
         <NoteEditor 
           note={selectedNote}
           formatTime={formatTime}
-          formatDate={formatDate}
+          formatDate={formatNumDate}
           onClose={() => setSelectedNote(null)}
           onSave={handleUpdateNote}
         />

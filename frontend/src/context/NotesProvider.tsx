@@ -10,6 +10,7 @@ const NotesProvider = ({ children }: Props) => {
   const [ isLoading, setIsLoading ] = useState(false);
   const [ notes, setNotes ] = useState<NotesType[] | []>([]);
   const [notesToRead, setNotesToRead] = useState<NotesType[] | []>([]);
+  const [selectedNote, setSelectedNote] = useState<NotesType | null>(null);
 
   const updateReadNote = async ({ noteId, id }: { noteId: string, id: string }) => {
     try {
@@ -63,7 +64,8 @@ const NotesProvider = ({ children }: Props) => {
   return (
     <NotesContext.Provider value={{
       isLoading, setIsLoading, notes,
-      setNotes, notesToRead, updateReadNote
+      setNotes, notesToRead, updateReadNote,
+      selectedNote, setSelectedNote
     }}>
       {children}
     </NotesContext.Provider>

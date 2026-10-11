@@ -12,6 +12,7 @@ import { useAuthContext } from "../context/AuthContext";
 import { useNotesContext } from "../context/NotesContext";
 import LoginOverlay from "./auth/LoginOverlay";
 import NoteViewer from "./notes/NoteViewer";
+import NotebookOverlay from "./notes/NotebookOverlay";
 
 const AppLayout = () => {
   const {
@@ -22,10 +23,10 @@ const AppLayout = () => {
     setIsAppLoaded,
   } = useAuthContext();
 
-  const { notesToRead, updateReadNote } = useNotesContext();
+  const { notesToRead, updateReadNote, selectedNote, setSelectedNote } = useNotesContext();
+  const [showNotebook, setShowNotebook] = useState(false);
 
   const [touch, setTouch] = useState(false);
-  const [isNoteOpen, setIsNoteOpen] = useState(false);
   const [isManualOpen, setIsManualOpen] = useState(false);
   const [noteIndex, setNoteIndex] = useState(0);
 
@@ -39,7 +40,12 @@ const AppLayout = () => {
   const currentNote = displayedNotes[noteIndex];
 
   const handleCloseNote = (noteId: string) => {
-    if (!user || !currentNote) return;
+    if (!user) return;
+
+    if (selectedNote) {
+      setSelectedNote(null);
+      return;
+    }
 
     if (!isManualOpen) {
       updateReadNote({ noteId, id: user.id });
@@ -48,7 +54,6 @@ const AppLayout = () => {
     if (noteIndex < displayedNotes.length - 1) {
       setNoteIndex((prev) => prev + 1);
     } else {
-      setIsNoteOpen(false);
       setIsManualOpen(false);
       setNoteIndex(0);
     }
@@ -58,12 +63,10 @@ const AppLayout = () => {
     if (isServerLoaded) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setTouch(true);
-      setIsNoteOpen(true);
       setIsManualOpen(false);
       setNoteIndex(0);
     } else {
       setTouch(false);
-      setIsNoteOpen(false);
     }
   }, [isServerLoaded]);
 
@@ -74,7 +77,7 @@ const AppLayout = () => {
       {!isAuthenticated && !user && <LoginOverlay />}
 
       <AnimatePresence mode="wait">
-        {isAppLoaded && isNoteOpen && currentNote && (
+        {isAppLoaded && currentNote && (
           <NoteViewer
             key={currentNote._id}
             note={currentNote}
@@ -82,6 +85,27 @@ const AppLayout = () => {
           />
         )}
       </AnimatePresence>
+
+      <AnimatePresence mode="wait">
+        {isAppLoaded && selectedNote && (
+          <NoteViewer
+            key={selectedNote._id}
+            note={selectedNote}
+            onClose={handleCloseNote}
+          />
+        )}
+      </AnimatePresence>
+
+      {showNotebook && (
+        <NotebookOverlay
+          notes={notesToRead}
+          onClose={() => setShowNotebook(false)}
+          onSelectNote={(note) => {
+            setSelectedNote(note)
+            setShowNotebook(false);
+          }}
+        />
+      )}
 
       <motion.div
         onClick={() => {
@@ -193,9 +217,7 @@ const AppLayout = () => {
                     text-[#8B7A45] transition hover:bg-[#F5E8A8]
                     active:scale-95"
                   onClick={() => {
-                    setNoteIndex(0);
-                    setIsManualOpen(true);
-                    setIsNoteOpen(true);
+                    setShowNotebook(true);
                   }}
                 >
                   {notesToRead.length > 0 && (

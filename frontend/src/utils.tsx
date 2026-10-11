@@ -1,10 +1,19 @@
-export const formatDate = (date: Date) => {
+export const formatNumDate = (date: Date) => {
   const y = date.getFullYear()
   const m = String(date.getMonth() + 1).padStart(2, '0')
   const d = String(date.getDate()).padStart(2, '0')
 
   return `${y}-${m}-${d}`
 }
+
+export const formatNameDate = (date: string) => {
+  if (!date) return;
+  return new Date(`${date}T00:00:00`).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+};
 
 export const formatTime = (time: string) => {
   const [hourString, minute] = time.split(':')

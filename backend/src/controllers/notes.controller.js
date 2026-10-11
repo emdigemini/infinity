@@ -4,14 +4,14 @@ import Note from "../models/Note.js";
 
 export const createNote = async (req, res) => {
   try {
-    const { title, content, date, time } = req.body;
+    const { title, content, date } = req.body;
     const userId = req.user.id;
 
-    if (!title || !content || !date || !time) {
+    if (!title || !content || !date) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
-    const newNote = await Note.create({ createdBy: userId, title, content, date, time });
+    const newNote = await Note.create({ createdBy: userId, title, content, date });
 
     res.status(201).json({
       message: "Note created successfully", 
@@ -80,28 +80,28 @@ export const fetchNoteToRead = async (req, res) => {
 
     const now = new Date();
 
-const todayPH = new Intl.DateTimeFormat("en-CA", {
-  timeZone: "Asia/Manila",
-  year: "numeric",
-  month: "2-digit",
-  day: "2-digit",
-}).format(now);
+    const todayPH = new Intl.DateTimeFormat("en-CA", {
+      timeZone: "Asia/Manila",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }).format(now);
 
-const notesToRead = notes.filter((note) => {
-  const noteDatePH = new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Asia/Manila",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).format(new Date(note.date));
+    const notesToRead = notes.filter((note) => {
+      const noteDatePH = new Intl.DateTimeFormat("en-CA", {
+        timeZone: "Asia/Manila",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      }).format(new Date(note.date));
 
-  return noteDatePH <= todayPH;
-});
-    
-    console.log("Current time:", now);
-    console.log("Partner ID:", partnerId);
-    console.log("Notes found:", notes.length);
-    console.log("Notes to read:", notesToRead.length);
+      return noteDatePH <= todayPH;
+    });
+        
+    // console.log("Current time:", now);
+    // console.log("Partner ID:", partnerId);
+    // console.log("Notes found:", notes.length);
+    // console.log("Notes to read:", notesToRead.length);
 
     return res.status(200).json({
       notesToRead,
