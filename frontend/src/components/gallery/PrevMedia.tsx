@@ -286,7 +286,7 @@ const DeleteConfirmation = ({ selectedMediaId, deleteMedia, onClose }: { selecte
         <div className="mt-6 flex justify-end gap-3">
           <button
             onClick={onClose}
-            className="rounded-xl px-4 py-2 text-sm font-medium text-[#2B2618] hover:bg-[#F3ECD8]"
+            className="rounded-xl px-4 py-2 text-sm font-medium text-[#2B2618] bg-[#e9e8e3] hover:bg-[#F3ECD8]"
           >
             Cancel
           </button>

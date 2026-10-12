@@ -182,16 +182,16 @@ export const deleteMedia = async (req, res) => {
         message: 'Media not found. Failed to delete media.'
       });
     
-    const publicId = getPublicIdFromUrl(media.url);
+    // const publicId = getPublicIdFromUrl(media.url);
 
-    const result = await cloudinary.uploader.destroy(
-      publicId,
-      { resource_type: media.type }
-    );
+    // const result = await cloudinary.uploader.destroy(
+    //   publicId,
+    //   { resource_type: media.type }
+    // );
 
-    if (result.result !== "ok" && result.result !== "not found") {
-      console.error("Failed to delete media from Cloudinary.");
-    }
+    // if (result.result !== "ok" && result.result !== "not found") {
+    //   console.error("Failed to delete media from Cloudinary.");
+    // }
 
     res.status(200).json({ message: 'Media deleted successfully.' });
   } catch (err) {
