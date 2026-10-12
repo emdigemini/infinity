@@ -52,6 +52,69 @@ export const createAlbum = async (req, res) => {
   }
 }
 
+export const updateAlbum = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, description, cover } = req.body;
+    const userId = req.user.id;
+
+    const user = await Account.findById(userId);
+
+    if (!user)
+      return res.status(404).json({ message: "User not found." });
+
+    if (!name?.trim())
+      return res.status(400).json({ message: "Album name cannot be empty." });
+
+    const album = await Album.findOne({ _id: id  });
+
+    if (!album)
+      return res.status(404).json({ message: "Album not found." });
+
+    const updatedDetails = {
+      name: name.trim(),
+    };
+
+    if (description !== undefined) {
+      updatedDetails.description = description;
+    }
+
+    if (req.file) {
+      const result = await uploadToCloudinary(
+        user.name,
+        `cover-for-${name.trim()}`,
+        [req.file]
+      );
+
+      updatedDetails.cover = result[0].secure_url;
+    }
+
+    if (cover === 'remove') {
+      updatedDetails.cover = ''
+    }
+
+    const updatedAlbum = await Album.findByIdAndUpdate(
+      id,
+      { $set: updatedDetails },
+      {
+        returnDocument: 'after',
+        runValidators: true,
+      }
+    );
+
+    return res.status(200).json({
+      message: "Album updated successfully.",
+      album: updatedAlbum,
+    });
+  } catch (err) {
+    console.error("Error in updateAlbum controller:", err);
+
+    return res.status(500).json({
+      message: "Internal server error.",
+    });
+  }
+};
+
 export const fetchAlbums = async (req, res) => {
   try {
     const userId = req.user.id;

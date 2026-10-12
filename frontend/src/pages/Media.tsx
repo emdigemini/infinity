@@ -123,17 +123,20 @@ const Media = () => {
 
             <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/10 to-transparent" />
 
-            <div className="absolute bottom-0 left-0 p-6 text-white sm:p-8">
-              <p className="mb-1 text-sm font-medium text-white/80">
-                Album
-              </p>
-
-              <h1 className="text-3xl font-bold tracking-tight">
+            <div className="absolute bottom-0 left-0 max-w-2xl p-6 text-white sm:p-8">
+              <h1 className="text-2xl md:text-3xl font-bold tracking-tight sm:text-4xl">
                 {album.name}
               </h1>
 
-              <p className="mt-1 text-sm text-white/80">
-                {album.media.length} media files
+              {album.description && (
+                <p className="mt-2 max-w-xl text-xs md:text-sm leading-relaxed text-white/85">
+                  {album.description}
+                </p>
+              )}
+
+              <p className="mt-3 text-[10px] md:text-xs font-medium text-white/70">
+                {album.media.length}{" "}
+                {album.media.length === 1 ? "memory" : "memories"}
               </p>
             </div>
           </div>

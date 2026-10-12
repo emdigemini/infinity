@@ -51,3 +51,10 @@ export interface MusicType {
   accessToken: string;
   expiresIn: string;
 }
+
+export type EditAlbumType = {
+  _id: string;
+  name: string;
+  description: string;
+  cover?: File | string;
+}

@@ -160,6 +160,7 @@ const Gallery = () => {
                   key={item._id}
                   name={item.name}
                   albumId={item._id}
+                  description={item.description}
                   index={index}
                   mediaCount={item.mediaCount}
                   media={item.media}

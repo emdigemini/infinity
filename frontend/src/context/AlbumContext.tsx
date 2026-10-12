@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import type { AlbumsType } from "..";
+import type { AlbumsType, EditAlbumType } from "..";
 
 type AlbumContextType = {
   isLoading: boolean;
@@ -7,6 +7,7 @@ type AlbumContextType = {
   albums: AlbumsType[] | [];
   setAlbums: React.Dispatch<React.SetStateAction<[] | AlbumsType[]>>;
   fetchAlbums: () => Promise<void>;
+  updateAlbum: ({ _id, name, cover, description }: EditAlbumType) => Promise<void>;
   deleteMedia: (id: string) => Promise<void>;
 } 
 
