@@ -7,6 +7,7 @@ type AlbumContextType = {
   albums: AlbumsType[] | [];
   setAlbums: React.Dispatch<React.SetStateAction<[] | AlbumsType[]>>;
   fetchAlbums: () => Promise<void>;
+  deleteMedia: (id: string) => Promise<void>;
 } 
 
 export const AlbumContext = createContext<AlbumContextType | null>(null);

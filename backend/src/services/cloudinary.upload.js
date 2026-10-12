@@ -38,3 +38,15 @@ export const uploadToCloudinary = (userName, name, media) => {
     })
   );
 };
+
+export const getPublicIdFromUrl = (url) => {
+  const parts = url.split("/upload/");
+
+  if (parts.length < 2) {
+    throw new Error("Invalid Cloudinary URL");
+  }
+
+  return parts[1]
+    .replace(/^v\d+\//, "")
+    .replace(/\.[^/.]+$/, "");
+};

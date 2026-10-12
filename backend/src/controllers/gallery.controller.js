@@ -1,7 +1,8 @@
+import cloudinary from "../middleware/cloudinary..middleware.js";
 import Account from "../models/Account.js";
 import Album from "../models/Album.js";
 import Media from "../models/Media.js";
-import { uploadToCloudinary } from "../services/cloudinary.upload.js";
+import { getPublicIdFromUrl, uploadToCloudinary } from "../services/cloudinary.upload.js";
 import mongoose from "mongoose";
 
 export const createAlbum = async (req, res) => {
@@ -166,6 +167,41 @@ export const addMedia = async (req, res) => {
     });
   }
 };
+
+export const deleteMedia = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    if (!id)
+      return res.status(400).json({ message: 'Failted to delete. No selected media.' });
+
+    const media = await Media.findByIdAndDelete(id);
+
+    if (!media)
+      return res.status(404).json({
+        message: 'Media not found. Failed to delete media.'
+      });
+    
+    const publicId = getPublicIdFromUrl(media.url);
+
+    const result = await cloudinary.uploader.destroy(
+      publicId,
+      { resource_type: media.type }
+    );
+
+    if (result.result !== "ok" && result.result !== "not found") {
+      console.error("Failed to delete media from Cloudinary.");
+    }
+
+    res.status(200).json({ message: 'Media deleted successfully.' });
+  } catch (err) {
+    console.log("Error in deleteMedia controller", err);
+
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+}
 
 export const deleteAlbum = async (req, res) => {
   try {

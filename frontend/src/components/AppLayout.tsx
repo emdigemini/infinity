@@ -13,6 +13,7 @@ import { useNotesContext } from "../context/NotesContext";
 import LoginOverlay from "./auth/LoginOverlay";
 import NoteViewer from "./notes/NoteViewer";
 import NotebookOverlay from "./notes/NotebookOverlay";
+import ServerLoading from "./ServerLoading";
 
 const AppLayout = () => {
   const {
@@ -29,6 +30,7 @@ const AppLayout = () => {
 
   const [touch, setTouch] = useState(false);
   const [isManualOpen, setIsManualOpen] = useState(false);
+  const [isNoteOpen, setIsNoteOpen] = useState(false);
   const [noteIndex, setNoteIndex] = useState(0);
 
   const pathname = useLocation().pathname;
@@ -65,6 +67,7 @@ const AppLayout = () => {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setTouch(true);
       setIsManualOpen(false);
+      setIsNoteOpen(true);
       setNoteIndex(0);
     } else {
       setTouch(false);
@@ -75,22 +78,26 @@ const AppLayout = () => {
     <div className="min-h-screen bg-white">
       {isAppLoaded && <Fab />}
 
-      {isServerLoaded && !isLoading && !isAuthenticated && !user && <LoginOverlay />}
+      {!isServerLoaded && <ServerLoading />}
+
+      {!isLoading && !isAuthenticated && !user && <LoginOverlay />}
 
       <AnimatePresence mode="wait">
-        {isAppLoaded && currentNote && (
+        {isAppLoaded && currentNote && isNoteOpen && (
           <NoteViewer
             key={currentNote._id}
             note={currentNote}
+            isNoteOpen={isNoteOpen}
             onClose={handleCloseNote}
           />
         )}
       </AnimatePresence>
 
       <AnimatePresence mode="wait">
-        {isAppLoaded && selectedNote && (
+        {isAppLoaded && selectedNote && isNoteOpen && (
           <NoteViewer
             key={selectedNote._id}
+            isNoteOpen={isNoteOpen}
             note={selectedNote}
             onClose={handleCloseNote}
           />
@@ -103,8 +110,10 @@ const AppLayout = () => {
           onClose={() => setShowNotebook(false)}
           onSelectNote={(note) => {
             setSelectedNote(note)
+            setIsNoteOpen(true);
             setShowNotebook(false);
           }}
+          showNotebook={showNotebook}
         />
       )}
 
