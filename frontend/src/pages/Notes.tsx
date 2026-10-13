@@ -12,7 +12,7 @@ import baseUrl from '../axios';
 import { useNotesContext } from '../context/NotesContext';
 
 const Notes = () => {
-  const { setIsLoading, setNotes, notes, selectedNote, setSelectedNote } = useNotesContext();
+  const { setIsLoading, setNotes, notes, selectedNote, setSelectedNote, editingNote,setEditingNote } = useNotesContext();
   const [showNoteModal, setShowNoteModal] = useState(false);
   const [showDeleteOverlay, setShowDeleteOverlay] = useState<NotesType | false>(false);
 
@@ -45,10 +45,10 @@ const Notes = () => {
       )}
       {selectedNote && (
         <NoteEditor 
-          note={selectedNote}
+          note={editingNote}
           formatTime={formatTime}
           formatDate={formatNumDate}
-          onClose={() => setSelectedNote(null)}
+          onClose={() => setEditingNote(null)}
           onSave={handleUpdateNote}
         />
       )}
