@@ -10,6 +10,8 @@ type NotesContextType = {
   updateReadNote: (params: { noteId: string, id: string }) => Promise<void>;
   setSelectedNote: React.Dispatch<React.SetStateAction<NotesType | null>>;
   selectedNote: NotesType | null;
+  setEditingNote: React.Dispatch<React.SetStateAction<NotesType | null>>;
+  editingNote: NotesType | null;
 }
 
 export const NotesContext = createContext<NotesContextType | null>(null);
