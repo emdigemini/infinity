@@ -9,7 +9,7 @@ import NoteList from './NoteList'
 import { formatNumDate, formatTime } from '../../utils'
 import type { NotesType } from '../..'
 
-const Calendar = ({ setShowDeleteOverlay, setSelectedNote, selectedNote }: { setShowDeleteOverlay: (note: NotesType) => void; setSelectedNote: (note: NotesType) => void; selectedNote: NotesType | null }) => {
+const Calendar = ({ setShowDeleteOverlay, setEditingNote, editingNote }: { setShowDeleteOverlay: (note: NotesType) => void; setEditingNote: (note: NotesType) => void; editingNote: NotesType | null }) => {
   const { notes } = useNotesContext();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -291,10 +291,10 @@ const Calendar = ({ setShowDeleteOverlay, setSelectedNote, selectedNote }: { set
           
           <NoteList
             selectedNotes={selectedNotes}
-            selectedNote={selectedNote}
+            editingNote={editingNote}
             formatTime={formatTime}
             setShowDeleteOverlay={setShowDeleteOverlay}
-            setSelectedNote={setSelectedNote}
+            setEditingNote={setEditingNote}
           />
         )}
 

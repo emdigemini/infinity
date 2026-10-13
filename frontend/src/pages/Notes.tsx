@@ -12,7 +12,7 @@ import baseUrl from '../axios';
 import { useNotesContext } from '../context/NotesContext';
 
 const Notes = () => {
-  const { setIsLoading, setNotes, notes, selectedNote, setSelectedNote, editingNote,setEditingNote } = useNotesContext();
+  const { setIsLoading, setNotes, notes, editingNote, setEditingNote } = useNotesContext();
   const [showNoteModal, setShowNoteModal] = useState(false);
   const [showDeleteOverlay, setShowDeleteOverlay] = useState<NotesType | false>(false);
 
@@ -43,7 +43,7 @@ const Notes = () => {
           onCancel={() => setShowDeleteOverlay(false)}
         />
       )}
-      {selectedNote && (
+      {editingNote && (
         <NoteEditor 
           note={editingNote}
           formatTime={formatTime}
@@ -135,8 +135,8 @@ const Notes = () => {
       {/* Calendar */}
       <Calendar
         setShowDeleteOverlay={setShowDeleteOverlay}
-        setSelectedNote={setSelectedNote}
-        selectedNote={selectedNote}
+        setEditingNote={setEditingNote}
+        editingNote={editingNote}
       />
 
     </div>

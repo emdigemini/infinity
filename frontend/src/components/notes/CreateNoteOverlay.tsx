@@ -124,22 +124,15 @@ const CreateNoteOverlay = ({
 
         {/* Paper left margin */}
         <div className="
-          pointer-events-none
-          absolute
-          bottom-0 left-10 top-0
-          w-px
+          pointer-events-none absolute
+          bottom-0 left-4 sm:left-10 top-0 w-px
           bg-[#E4B9A0]/60
         " />
 
         {/* Content */}
         <div className="
-          relative
-          min-h-full
-          px-14
-          pb-20
-          pt-10
-          sm:px-20
-          sm:pt-12
+          relative min-h-full px-8
+          pb-20 pt-10 sm:px-14 sm:pt-12
         ">
 
           {/* Header */}
@@ -194,20 +187,10 @@ const CreateNoteOverlay = ({
                 }))
               }
               className="
-                mt-1
-                w-full
-                border-0
-                border-b
-                border-[#D4A72C]/50
-                bg-transparent
-                px-0
-                py-1
-                font-serif
-                text-lg
-                text-[#2B2618]
-                outline-none
-                placeholder:text-[#B8A979]
-                focus:border-[#D4A72C]
+                mt-1 w-full border-0
+                border-b border-[#D4A72C]/50 bg-transparent
+                px-0 py-1 font-serif text-md md:text-lg text-[#2B2618]
+                outline-none placeholder:text-[#B8A979] focus:border-[#D4A72C]
               "
             />
           </div>
@@ -216,10 +199,9 @@ const CreateNoteOverlay = ({
           <div className="mb-10">
 
             <label className="
-              mb-2
-              block
+              mb-2 block
               font-serif
-              text-lg
+              text-md md:text-lg
               text-[#2B2618]
             ">
               Dear love,
@@ -238,7 +220,7 @@ const CreateNoteOverlay = ({
                 min-h-70 w-full overflow-y-auto
                 overflow-hidden
                 bg-[#FFFDF5] font-serif
-                text-[16px] leading-8.25
+                text-[12px] md:text-[16px] leading-8.25
                 text-[#2B2618] rounded-xl
                 border border-[#D4A72C]/40
                 p-4 shadow-[inset_0_1px_4px_rgba(212,167,44,0.08)]
