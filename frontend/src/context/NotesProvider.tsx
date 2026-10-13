@@ -11,7 +11,8 @@ const NotesProvider = ({ children }: Props) => {
   const [ notes, setNotes ] = useState<NotesType[] | []>([]);
   const [notesToRead, setNotesToRead] = useState<NotesType[] | []>([]);
   const [selectedNote, setSelectedNote] = useState<NotesType | null>(null);
-
+  const [editingNote, setEditingNote] = useState<NotesType | null>(null);
+  
   const updateReadNote = async ({ noteId, id }: { noteId: string, id: string }) => {
     try {
       await baseUrl.patch("/notes/read-note", null, {
@@ -65,7 +66,8 @@ const NotesProvider = ({ children }: Props) => {
     <NotesContext.Provider value={{
       isLoading, setIsLoading, notes,
       setNotes, notesToRead, updateReadNote,
-      selectedNote, setSelectedNote
+      selectedNote, setSelectedNote, 
+      editingNote, setEditingNote
     }}>
       {children}
     </NotesContext.Provider>
