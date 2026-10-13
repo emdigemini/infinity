@@ -23,7 +23,7 @@ const NoteEditor = ({
   const initialTitle = useRef(note.title);
   const initialContent = useRef(note.content);
 
-  const dateCreated = new Date(note.createdAt);
+  const dateCreated = new Date(note.createdAt!);
 
   const timeCreated = dateCreated.toLocaleTimeString("en-US", {
     hour: "numeric",
@@ -31,6 +31,7 @@ const NoteEditor = ({
     hour12: true,
   });
 
+  // Lock body scroll while editor is open
   useEffect(() => {
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -39,6 +40,7 @@ const NoteEditor = ({
     };
   }, []);
 
+  // Autosave (debounced)
   useEffect(() => {
     if (
       title === initialTitle.current &&
@@ -59,8 +61,7 @@ const NoteEditor = ({
 
   return (
     <div className="fixed inset-0 z-999 flex items-center justify-center bg-black/50 p-3 sm:p-6">
-      <div className="relative flex h-[95vh] w-full max-w-3xl flex-col overflow-hidden rounded-sm bg-[#FFFDF5] shadow-2xl">
-
+      <div className="relative flex h-[95dvh] w-full max-w-3xl flex-col overflow-hidden rounded-sm bg-[#FFFDF5] shadow-2xl">
         {/* Close Button */}
         <button
           type="button"
@@ -97,13 +98,8 @@ const NoteEditor = ({
                 <span className="w-16 font-medium uppercase tracking-wide">
                   Created
                 </span>
-
-                <span>
-                  {formatDate(new Date(note.createdAt!))}
-                </span>
-
+                <span>{formatDate(dateCreated)}</span>
                 <span className="text-[#D4A72C]">•</span>
-
                 <span>{timeCreated}</span>
               </div>
 
@@ -111,13 +107,8 @@ const NoteEditor = ({
                 <span className="w-16 font-medium uppercase tracking-wide">
                   Scheduled
                 </span>
-
-                <span>
-                  {formatDate(new Date(note.date))}
-                </span>
-
+                <span>{formatDate(new Date(note.date))}</span>
                 <span className="text-[#D4A72C]">•</span>
-
                 <span>{formatTime(note.time)}</span>
               </div>
             </div>
@@ -129,12 +120,12 @@ const NoteEditor = ({
           {/* Editable Content */}
           <main className="relative flex min-h-0 flex-1 flex-col pl-5 sm:pl-7">
             <textarea
-             value={content}
-             onChange={(e) => setContent(e.target.value)}
-             placeholder="Write your note..."
-             className="min-h-0 w-full flex-1 resize-none overflow-y-auto touch-pan-y border-none bg-transparent font-serif text-[17px] leading-8 text-[#2B2618] outline-none placeholder:text-[#B8A879]"
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              placeholder="Write your note..."
+              className="min-h-0 w-full flex-1 resize-none overflow-y-auto touch-pan-y border-none bg-transparent font-serif text-[17px] leading-8 text-[#2B2618] outline-none placeholder:text-[#B8A879]"
             />
-         </main>
+          </main>
         </div>
       </div>
     </div>
