@@ -32,6 +32,14 @@ const NoteEditor = ({
   });
 
   useEffect(() => {
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, []);
+
+  useEffect(() => {
     if (
       title === initialTitle.current &&
       content === initialContent.current
@@ -119,14 +127,14 @@ const NoteEditor = ({
           <div className="relative mb-7 ml-5 shrink-0 border-t border-[#E8D9A5] sm:ml-7" />
 
           {/* Editable Content */}
-          <main className="relative min-h-0 flex-1 pl-5 sm:pl-7">
+          <main className="relative flex min-h-0 flex-1 flex-col pl-5 sm:pl-7">
             <textarea
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              placeholder="Write your note..."
-              className="h-full min-h-0 w-full resize-none overflow-y-scroll overscroll-contain border-none bg-transparent font-serif text-[17px] leading-8 text-[#2B2618] outline-none placeholder:text-[#B8A879]"
+             value={content}
+             onChange={(e) => setContent(e.target.value)}
+             placeholder="Write your note..."
+             className="min-h-0 w-full flex-1 resize-none overflow-y-auto touch-pan-y border-none bg-transparent font-serif text-[17px] leading-8 text-[#2B2618] outline-none placeholder:text-[#B8A879]"
             />
-          </main>
+         </main>
         </div>
       </div>
     </div>
