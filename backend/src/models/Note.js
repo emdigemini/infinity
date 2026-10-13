@@ -19,6 +19,10 @@ const noteSchema = new mongoose.Schema({
     type: Date,
     required: true
   },
+  time: {
+    type: String,
+    required: true
+  },
   isRead: {
     type: Boolean,
     required: true,

@@ -1,4 +1,4 @@
-import { X, Heart, Send, CalendarDays} from 'lucide-react'
+import { X, Heart, Send, CalendarDays, Clock3 } from 'lucide-react'
 import { formatNameDate } from '../../utils';
 import { useState } from 'react'
 import { toast } from 'react-hot-toast'
@@ -326,7 +326,6 @@ const CreateNoteOverlay = ({
             </div>
 
             {/* Date picker */}
-            <div className="relative">
               <label
                 htmlFor="note-date"
                 className="
@@ -388,6 +387,37 @@ const CreateNoteOverlay = ({
                   "
                 />
               </div>
+              
+              {/* Time Picker */}
+              <div className="relative mt-5">
+                <label
+                  htmlFor="note-time"
+                  className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#8B7A45]"
+                >
+                  <Clock3 size={14} />
+                  Delivery time
+                </label>
+
+                <div className="flex items-center gap-3 rounded-xl border border-[#D4A72C]/35 bg-white/80 px-3 transition-colors focus-within:border-[#D4A72C] focus-within:ring-2 focus-within:ring-[#D4A72C]/15">
+                  <Clock3
+                    size={19}
+                    className="shrink-0 text-[#D4A72C]"
+                  />
+
+                  <input
+                    id="note-time"
+                    type="time"
+                    value={note.time}
+                    onChange={(e) =>
+                      setNote((prev) => ({
+                        ...prev,
+                        time: e.target.value,
+                      }))
+                    }
+                    className="w-full min-w-0 cursor-pointer bg-transparent py-3 text-sm font-medium text-[#2B2618] outline-none"
+                  />
+                </div>
+
 
               <p className="
                 mt-2

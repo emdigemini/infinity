@@ -3,14 +3,14 @@ import Note from "../models/Note.js";
 
 export const createNote = async (req, res) => {
   try {
-    const { title, content, date } = req.body;
+    const { title, content, date, time } = req.body;
     const userId = req.user.id;
 
-    if (!title || !content || !date) {
+    if (!title || !content || !date || !time) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
-    const newNote = await Note.create({ createdBy: userId, title, content, date });
+    const newNote = await Note.create({ createdBy: userId, title, content, date, time });
 
     res.status(201).json({
       message: "Note created successfully", 
@@ -56,8 +56,7 @@ export const fetchNoteToRead = async (req, res) => {
   try {
     const userId = req.user.id;
 
-    const user = await Account.findById(userId)
-      .populate("relationship");
+    const user = await Account.findById(userId).populate("relationship");
 
     if (!user) {
       return res.status(404).json({
@@ -75,37 +74,30 @@ export const fetchNoteToRead = async (req, res) => {
 
     const notes = await Note.find({
       createdBy: partnerId,
+      date: { $lte: new Date(Date.now() + 24 * 60 * 60 * 1000) },
     });
 
     const now = new Date();
 
-    const todayPH = new Intl.DateTimeFormat("en-CA", {
-      timeZone: "Asia/Manila",
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    }).format(now);
+    const scheduledAt = (note) => {
+      const day = note.date.toISOString().slice(0, 10); // "YYYY-MM-DD"
+      return new Date(`${day}T${note.time}:00+08:00`);
+    };
 
     const notesToRead = notes.filter((note) => {
-      const noteDatePH = new Intl.DateTimeFormat("en-CA", {
-        timeZone: "Asia/Manila",
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-      }).format(new Date(note.date));
+      const scheduled = scheduledAt(note);
 
-      return noteDatePH <= todayPH;
+      if (Number.isNaN(scheduled.getTime())) {
+        console.warn(`Note ${note._id} has invalid time: "${note.time}"`);
+        return false;
+      }
+
+      return scheduled <= now;
     });
-        
-    // console.log("Current time:", now);
-    // console.log("Partner ID:", partnerId);
-    // console.log("Notes found:", notes.length);
-    // console.log("Notes to read:", notesToRead.length);
 
     return res.status(200).json({
       notesToRead,
     });
-
   } catch (err) {
     console.error("Error in fetchNoteToRead controller:", err);
 
