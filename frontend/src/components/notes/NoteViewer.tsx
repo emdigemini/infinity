@@ -2,7 +2,7 @@ import type { NotesType } from "../..";
 import { motion } from "framer-motion";
 import { X } from "lucide-react";
 // import { formatDate, formatTime } from "../../utils";
-import { RemoveScroll } from "react-remove-scroll";
+// import { RemoveScroll } from "react-remove-scroll";
 
 const paperTransition = {
   duration: 0.85,
@@ -27,7 +27,7 @@ const NoteViewer = ({
   const characterCount = text.length;
 
   return (
-    <RemoveScroll enabled={isNoteOpen}>
+    {/* <RemoveScroll enabled={isNoteOpen}>*/}
       <div className="fixed inset-0 z-999 flex items-center justify-center bg-black/30 p-5">
 
         {/* 3D Perspective */}
@@ -132,7 +132,7 @@ const NoteViewer = ({
 
         </div>
       </div>
-    </RemoveScroll>
+{/*</RemoveScroll>*/}
   );
 };
 
