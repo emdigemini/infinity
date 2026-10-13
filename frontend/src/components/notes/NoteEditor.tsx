@@ -124,7 +124,7 @@ const NoteEditor = ({
               value={content}
               onChange={(e) => setContent(e.target.value)}
               placeholder="Write your note..."
-              className="h-full min-h-0 w-full resize-none overflow-y-auto border-none bg-transparent font-serif text-[17px] leading-8 text-[#2B2618] outline-none placeholder:text-[#B8A879]"
+              className="h-full min-h-0 w-full resize-none overflow-y-scroll overscroll-contain border-none bg-transparent font-serif text-[17px] leading-8 text-[#2B2618] outline-none placeholder:text-[#B8A879]"
             />
           </main>
         </div>
