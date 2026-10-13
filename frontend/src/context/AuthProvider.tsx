@@ -26,20 +26,23 @@ const AuthProvider = ({ children }: Props) => {
       setIsLoading(false);
     }
   }
+
+  const runServer = async () => {
+    try {
+      await baseUrl.get('/start-server');
+        return true;
+    } catch (err: unknown) {
+      console.error("Server connection failed:", err);
+      return false;
+    }
+  };
   
   useEffect(() => {
-    
-    const runServer = async () => {
-      try {
-        await baseUrl.get('/');
-        setIsServerLoaded(true);
-      } catch (err: unknown) {
-        console.error("Server connection failed:", err);
-        setIsServerLoaded(false);
-      }
-    };
-    
-    runServer();
+    const startServer = async () => {
+      const isRunning = await runServer();
+      setIsServerLoaded(isRunning);
+    }
+    startServer();
   }, []);
 
   useEffect(() => {
