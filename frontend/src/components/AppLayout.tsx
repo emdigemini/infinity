@@ -80,7 +80,7 @@ const AppLayout = () => {
 
       {!isServerLoaded && <ServerLoading />}
 
-      {!isServerLoaded && !isLoading && !isAuthenticated && !user && <LoginOverlay />}
+      {isServerLoaded && !isAuthenticated && !user && <LoginOverlay />}
 
       <AnimatePresence mode="wait">
         {isAppLoaded && currentNote && isNoteOpen && (
