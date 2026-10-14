@@ -20,7 +20,6 @@ const AppLayout = () => {
     user,
     isAuthenticated,
     isAppLoaded,
-    isLoading,
     isServerLoaded,
     setIsAppLoaded,
   } = useAuthContext();
