@@ -110,7 +110,6 @@ const AppLayout = () => {
           onSelectNote={(note) => {
             setSelectedNote(note)
             setIsNoteOpen(true);
-            setShowNotebook(false);
           }}
           showNotebook={showNotebook}
         />

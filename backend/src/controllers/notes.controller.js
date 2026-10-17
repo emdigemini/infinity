@@ -75,7 +75,7 @@ export const fetchNoteToRead = async (req, res) => {
     const notes = await Note.find({
       createdBy: partnerId,
       date: { $lte: new Date(Date.now() + 24 * 60 * 60 * 1000) },
-    });
+    }).sort({ date: -1 });
 
     const now = new Date();
 

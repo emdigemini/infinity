@@ -121,6 +121,7 @@ const NoteEditor = ({
           <main className="relative flex min-h-0 flex-1 flex-col pl-5 sm:pl-7">
             <textarea
               value={content}
+              spellCheck={false}
               onChange={(e) => setContent(e.target.value)}
               placeholder="Write your note..."
               className="min-h-0 w-full flex-1 resize-none overflow-y-auto touch-pan-y border-none bg-transparent font-serif text-[17px] leading-8 text-[#2B2618] outline-none placeholder:text-[#B8A879]"

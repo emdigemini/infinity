@@ -210,6 +210,7 @@ const CreateNoteOverlay = ({
             <textarea
               value={note.content}
               placeholder="Write something from your heart..."
+              spellCheck={false}
               onChange={(e) =>
                 setNote(prev => ({
                   ...prev,

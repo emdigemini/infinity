@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import type { NotesType } from "../..";
 import { motion } from "framer-motion";
 import { X } from "lucide-react";
+import { formatNameDate } from "../../utils";
 // import { formatDate, formatTime } from "../../utils";
 
 const paperTransition = {
@@ -23,7 +24,6 @@ const NoteViewer = ({
   const wordCount = text.trim() ? text.trim().split(/\s+/).length : 0;
   const characterCount = text.length;
 
-  // Lock body scroll while viewer is open
   useEffect(() => {
     if (!isNoteOpen) return;
     const prev = document.body.style.overflow;
@@ -34,7 +34,7 @@ const NoteViewer = ({
   }, [isNoteOpen]);
 
   return (
-    <div className="fixed inset-0 z-999 flex items-center justify-center bg-black/30 p-5">
+    <div className="fixed inset-0 z-9999 flex items-center justify-center bg-black/30 px-1.5 py-3">
       {/* 3D Perspective */}
       <div className="relative w-full max-w-175 perspective-[1800px]">
         <motion.div
@@ -100,6 +100,9 @@ const NoteViewer = ({
               {/* NOTE CONTENT */}
               <p className="mt-4 whitespace-pre-wrap text-[14px] leading-8 text-[#2B2618] md:text-[16px]">
                 {note.content}
+                <span className="text-[10px] italic text-[#8B7A45]">
+                  Penned on {formatNameDate(note.createdAt.split("T")[0])}
+                </span>
               </p>
             </div>
           </div>
