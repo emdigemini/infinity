@@ -213,16 +213,16 @@ const NotebookOverlay = ({
                       </p>
 
                       <span className="mt-3 border-t border-dashed border-[#D8C99A] pt-2 text-[10px] text-[#8B7A45]">
-                        Penned on
+                        Received on
                       </span>
 
                       <span className="text-[10px] text-[#8B7A45]">
                         {note.createdAt
-                          ? formatNameDate(note.createdAt.split("T")[0])
+                          ? formatNameDate(note.date.split("T")[0])
                           : "A timeless letter"}
                       </span>
 
-                      <span className="mt-3 text-[10px] font-medium text-[#B08A2E]">
+                      <span className="mt-1.5 text-[10px] font-medium text-[#B08A2E]">
                         Read letter →
                       </span>
                     </button>
