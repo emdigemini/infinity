@@ -190,7 +190,6 @@ const Media = () => {
                       className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
                     />}
 
-                {/* Video indicator */}
                 {item.type === "video" && (
                   <div className="absolute left-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-black/70 text-white backdrop-blur-sm">
                     <svg
@@ -203,7 +202,6 @@ const Media = () => {
                   </div>
                 )}
 
-                {/* Hover overlay */}
                 <div className="absolute inset-0 flex items-end bg-linear-to-t from-black/40 to-transparent opacity-0 transition group-hover:opacity-100">
                   <div className="p-3 text-xs font-medium text-white">
                     {item.type === "video" ? "Video" : "Photo"}

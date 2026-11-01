@@ -62,7 +62,7 @@ export const loginAccount = async (req, res) => {
     const acc_id = jwt.sign(
       { id: user.id },
       process.env.JWT_SUPER_SECRET,
-      { expiresIn: '7d' }
+      { expiresIn: '30d' }
     );
 
     res.cookie('acc_id', acc_id, {
@@ -70,7 +70,7 @@ export const loginAccount = async (req, res) => {
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       path: '/',
-      maxAge: 7 * 24 * 60 * 60 * 1000
+      maxAge: 30 * 24 * 60 * 60 * 1000
     });
 
     res.status(200).json({

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import {
   X,
   Plus,
@@ -25,6 +25,54 @@ const NewAlbumOverlay = ({
   const [media, setMedia] = useState<File[]>([]);
   const [albumName, setAlbumName] = useState("");
   const [description, setDescription] = useState("");
+
+  const MB = 1024 * 1024;
+  const MAX_IMAGE_SIZE = 10 * MB;
+  const MAX_VIDEO_SIZE = 100 * MB;
+
+  const handleMediaChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const files = e.target.files;
+
+    if (!files) return;
+
+    const selectedFiles = Array.from(files).filter(
+      (file) =>
+        file.type.startsWith("image/") ||
+        file.type.startsWith("video/")
+    );
+
+    const oversizedFiles = selectedFiles.filter((file) => {
+      const isImage = file.type.startsWith("image/");
+      const isVideo = file.type.startsWith("video/");
+
+      if (isImage) return file.size > MAX_IMAGE_SIZE;
+      if (isVideo) return file.size > MAX_VIDEO_SIZE;
+
+      return true;
+    });
+
+    if (oversizedFiles.length > 0) {
+      oversizedFiles.forEach((file) => {
+        const isImage = file.type.startsWith("image/");
+
+        toast.error(
+          `${file.name} exceeds the ${isImage ? "10 MB image" : "100 MB video"} limit.`
+        );
+      });
+
+      e.target.value = "";
+      return;
+    }
+
+    setMedia((prev) => [
+      ...prev,
+      ...selectedFiles,
+    ]);
+
+    e.target.value = "";
+  };
 
   const handleAddPhotos = () => {
     fileInputRef.current?.click();
@@ -401,41 +449,7 @@ const NewAlbumOverlay = ({
                   accept="image/*,video/*"
                   multiple
                   className="hidden"
-                  onChange={(e) => {
-                    const files = e.target.files;
-
-                    if (!files) return;
-
-                    const selectedFiles =
-                      Array.from(files).filter(
-                        (file) =>
-                          file.type.startsWith("image/") ||
-                          file.type.startsWith("video/")
-                      );
-
-                    const isSizeTooLarge =
-                      selectedFiles.some(
-                        (file) =>
-                          file.size >
-                          10 * 1024 * 1024
-                      );
-
-                    if (isSizeTooLarge) {
-                      toast.error(
-                        "Some files are too large. Each file must be 10 MB or smaller."
-                      );
-
-                      e.target.value = "";
-                      return;
-                    }
-
-                    setMedia((prev) => [
-                      ...prev,
-                      ...selectedFiles,
-                    ]);
-
-                    e.target.value = "";
-                  }}
+                  onChange={handleMediaChange}
                 />
 
                 {/* Media Container */}

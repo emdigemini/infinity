@@ -1,5 +1,6 @@
 import { Camera, Play, ImageIcon } from "lucide-react"
 import type { MediaType } from "..";
+import { useNavigate } from "react-router-dom";
 
 type OverviewCardType = {
   name: string;
@@ -9,6 +10,7 @@ type OverviewCardType = {
 }
 
 const OverviewCard = ({ name, mediaCount, albumId, media }: OverviewCardType) => {
+  const navigate = useNavigate();
 
   return (
     <div 
@@ -76,11 +78,17 @@ const OverviewCard = ({ name, mediaCount, albumId, media }: OverviewCardType) =>
                     )}
 
                   {isLast && remaining > 0 && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+                    <button
+                      className="
+                        select-none absolute 
+                        inset-0 flex items-center 
+                        justify-center bg-black/50"
+                      onClick={() => navigate(`/gallery/${albumId}`)}
+                    >
                       <span className="text-lg font-semibold text-white">
                         {remaining > 9 ? '9+ more' : `${remaining} more`}
                       </span>
-                    </div>
+                    </button>
                   )}
                 </div>
               );
