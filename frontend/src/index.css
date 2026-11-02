@@ -1,1 +1,15 @@
 @import 'tailwindcss';
+
+@keyframes heartPulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+    filter: drop-shadow(0 0 2px #D4A72C);
+  }
+
+  50% {
+    opacity: 0.65;
+    transform: scale(1.15);
+    filter: drop-shadow(0 0 7px #D4A72C);
+  }
+}
