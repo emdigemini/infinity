@@ -19,7 +19,7 @@ app.use(cors({
 }));
 
 // routes
-app.get("/api/start-server", (req, res) => {
+app.get("/api/start-server", (_, res) => {
   res.status(200).json({ message: 'API is now running' })
 });
 app.use('/api/account', accountRoutes);
