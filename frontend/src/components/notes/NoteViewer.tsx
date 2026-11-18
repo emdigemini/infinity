@@ -100,8 +100,9 @@ const NoteViewer = ({
               {/* NOTE CONTENT */}
               <p className="mt-4 whitespace-pre-wrap text-[14px] leading-8 text-[#2B2618] md:text-[16px]">
                 {note.content}
+                <br />
                 <span className="text-[10px] italic text-[#8B7A45]">
-                  Penned on {formatNameDate(note.createdAt.split("T")[0])}
+                  Written on {formatNameDate(note.createdAt.split("T")[0])}
                 </span>
               </p>
             </div>
