@@ -1,5 +1,5 @@
 import Fab from "./Fab";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   InfinityIcon,
@@ -34,7 +34,9 @@ const AppLayout = () => {
 
   const pathname = useLocation().pathname;
   const navigate = useNavigate();
-
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const paperFx1 = useRef<HTMLAudioElement | null>(null);
+  
   const isHome = pathname.split("/").filter(Boolean).length === 1;
 
   const unreadNotes = notesToRead.filter((note) => !note.isRead);
@@ -43,6 +45,8 @@ const AppLayout = () => {
 
   const handleCloseNote = (noteId: string) => {
     if (!user) return;
+    
+    playPaperSound();
 
     if (selectedNote) {
       setSelectedNote(null);
@@ -61,6 +65,16 @@ const AppLayout = () => {
     }
   };
 
+  const playPaperSound = () => {
+    const paper = paperFx1.current;
+    if (!paper) return;
+
+    paper.currentTime = 0;
+    paper.play().catch((error) => {
+      console.log("Audio playback error:", error);
+    });
+  };
+
   useEffect(() => {
     if (isServerLoaded) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -72,6 +86,45 @@ const AppLayout = () => {
       setTouch(false);
     }
   }, [isServerLoaded]);
+
+  useEffect(() => {
+    const bg = new Audio("/audio/until-i-found-you.mp3");
+    bg.loop = true;
+    bg.volume = 0.2;
+    bg.preload = "auto";
+
+    const paper = new Audio("/audio/fx/paperFx1.mp3");
+    paper.preload = "auto";
+    paper.volume = 0.2;
+
+    paper.addEventListener("error", () => {
+      console.error("Paper audio failed to load:", paper.error);
+    });
+
+    audioRef.current = bg;
+    paperFx1.current = paper;
+
+    return () => {
+      bg.pause();
+      paper.pause();
+
+      audioRef.current = null;
+      paperFx1.current = null;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!currentNote) return;
+    playPaperSound();
+  }, [currentNote]);
+
+  useEffect(() => {
+    if (!isAppLoaded || !isServerLoaded || !isAuthenticated) return;
+
+    audioRef.current?.play().catch((error) => {
+      console.log("Audio autoplay blocked:", error);
+    });
+  }, [isAppLoaded, isServerLoaded, isAuthenticated]);
 
   return (
     <div className="min-h-screen bg-white">
@@ -112,6 +165,7 @@ const AppLayout = () => {
           onSelectNote={(note) => {
             setSelectedNote(note)
             setIsNoteOpen(true);
+            playPaperSound();
           }}
           showNotebook={showNotebook}
         />
