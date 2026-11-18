@@ -30,7 +30,7 @@ const AppLayout = () => {
   const [touch, setTouch] = useState(false);
   const [isManualOpen, setIsManualOpen] = useState(false);
   const [isNoteOpen, setIsNoteOpen] = useState(false);
-  const [noteIndex, setNoteIndex] = useState(0);
+  const [noteIndex, setNoteIndex] = useState<number | null>(0);
 
   const pathname = useLocation().pathname;
   const navigate = useNavigate();
@@ -39,7 +39,7 @@ const AppLayout = () => {
 
   const unreadNotes = notesToRead.filter((note) => !note.isRead);
   const displayedNotes = isManualOpen ? notesToRead : unreadNotes;
-  const currentNote = displayedNotes[noteIndex];
+  const currentNote = displayedNotes[noteIndex as number];
 
   const handleCloseNote = (noteId: string) => {
     if (!user) return;
@@ -52,9 +52,9 @@ const AppLayout = () => {
     if (!isManualOpen) {
       updateReadNote({ noteId, id: user.id });
     }
-
-    if (noteIndex < displayedNotes.length - 1) {
-      setNoteIndex((prev) => prev + 1);
+    
+    if (Number(noteIndex) < displayedNotes.length) {
+      setNoteIndex((prev) => Number(prev) + 1);
     } else {
       setIsManualOpen(false);
       setNoteIndex(0);
@@ -106,7 +106,9 @@ const AppLayout = () => {
       {showNotebook && (
         <NotebookOverlay
           notes={notesToRead}
-          onClose={() => setShowNotebook(false)}
+          onClose={() => {
+            setShowNotebook(false);
+          }}
           onSelectNote={(note) => {
             setSelectedNote(note)
             setIsNoteOpen(true);
