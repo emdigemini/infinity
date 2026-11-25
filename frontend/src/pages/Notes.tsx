@@ -100,7 +100,7 @@ const Notes = () => {
             </div>
           </div>
 
-          {/* Create Note */}
+          {/* Create Note Button */}
           <button
             type="button"
             onClick={() => setShowNoteModal(true)}

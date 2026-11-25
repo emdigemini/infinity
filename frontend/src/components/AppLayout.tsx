@@ -90,12 +90,12 @@ const AppLayout = () => {
   useEffect(() => {
     const bg = new Audio("/audio/until-i-found-you.mp3");
     bg.loop = true;
-    bg.volume = 0.2;
+    bg.volume = 0.3;
     bg.preload = "auto";
 
     const paper = new Audio("/audio/fx/paperFx1.mp3");
     paper.preload = "auto";
-    paper.volume = 0.2;
+    paper.volume = 0.1;
 
     paper.addEventListener("error", () => {
       console.error("Paper audio failed to load:", paper.error);

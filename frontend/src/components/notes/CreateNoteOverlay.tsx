@@ -1,6 +1,6 @@
 import { X, Heart, Send, CalendarDays, Clock3 } from 'lucide-react'
 import { formatNameDate } from '../../utils';
-import { useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { toast } from 'react-hot-toast'
 import { isAxiosError } from "axios";
 import baseUrl from '../../axios';
@@ -26,6 +26,13 @@ const CreateNoteOverlay = ({
       .toISOString()
       .split("T")[0];
   });
+  const timeOut = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const keepServerAlive = () => {
+    timeOut.current = setTimeout(async () => {
+      await baseUrl.get('/start-server');
+    }, 1000 * 60 * 3)
+  }
 
   const handleCreateNote = async () => {
     
@@ -67,6 +74,15 @@ const CreateNoteOverlay = ({
       year: 'numeric'
     }
   )
+
+  useEffect(() => {
+    keepServerAlive();
+    return () => {
+      if (timeOut.current) {
+        clearTimeout(timeOut.current);
+      }
+    };
+  }, []);
 
   return (
     <div className="
@@ -211,7 +227,7 @@ const CreateNoteOverlay = ({
               value={note.content}
               placeholder="Write something from your heart..."
               spellCheck={false}
-              onChange={(e) =>
+              onChange={(e) => 
                 setNote(prev => ({
                   ...prev,
                   content: e.target.value
