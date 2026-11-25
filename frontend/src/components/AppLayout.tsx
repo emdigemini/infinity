@@ -14,6 +14,7 @@ import LoginOverlay from "./auth/LoginOverlay";
 import NoteViewer from "./notes/NoteViewer";
 import NotebookOverlay from "./notes/NotebookOverlay";
 import ServerLoading from "./ServerLoading";
+import DaisyOverlay from "./DaisyOverlay";
 
 const AppLayout = () => {
   const {
@@ -197,6 +198,7 @@ const AppLayout = () => {
               exit={{ opacity: 0 }}
               className="flex h-screen flex-col items-center justify-center"
             >
+              <DaisyOverlay />
               <motion.div
                 animate={{ rotate: 360 }}
                 transition={
